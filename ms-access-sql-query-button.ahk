@@ -50,7 +50,8 @@ main(onlySelectsDB) { ; sends the command to create a new query
 ; --------------------------------------
 fileDialogAccess() {
 	FileSelectFile,accessAddress,2,,Selects the Access Database,Access Database (*.accdb) ; get the access file
-	recentFilesAddress.Insert(accessAddress)
+	if (accessAddress != "")
+		recentFilesAddress.Insert(accessAddress)
 	return accessAddress
 } 
 ; --------------------------------------
