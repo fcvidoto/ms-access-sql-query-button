@@ -25,6 +25,8 @@ global recentFilesAddress := [] ;
 main(onlySelectsDB) { ; sends the command to create a new query
 	if (accessAddress == "")
 		accessAddress := fileDialogAccess() ; get the database path
+		if (accessAddress == "")
+			return
 	; --------------------------------------
 	acc := ComObjGet(accessAddress)
 	filename := acc.currentproject.name
