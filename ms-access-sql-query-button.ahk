@@ -77,7 +77,6 @@ recentFilesMountMenu() { ; adds temp files to submenu
 ; ______________________________________
 ; // sub-labels
 selectsAccessDB:
-	accessAddress := fileDialogAccess() ; access database address
 	main(true) ; sends the command to create a new query
 return
 ; --------------------------------------
