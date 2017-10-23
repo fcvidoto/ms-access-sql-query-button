@@ -66,6 +66,8 @@ main(onlySelectsDB, createSQLquery) { ; sends the command to create a new query
 cleanGlobals() {
 	filename := ;
 	accessAddress := ; access database address
+	if IsObject(acc)
+		acc.quit
 	acc := ; access instance
 }
 
@@ -76,7 +78,7 @@ exportAllTable() { ; exporta all tables
 		StringLeft, strLeft, tableExpt, 4
 		
 		if (strLeft != "MSys") {
-			allTables .= "`r`n ------------------------------- "
+			allTables .= "`r`n'------------------------------- "
 			allTables .= "`r`n'" . table.name . "'"
 			for field in table.fields
 				allTables .= "`r`n   " . field.name . ","
@@ -91,7 +93,7 @@ exportAllTable() { ; exporta all tables
 exportAllQuery() { ; export all queries from the database
 	allQueries := ; emptys the clipboard
 	for query in acc.currentdb.querydefs {
-		allQueries .= "`r`n ------------------------------- "
+		allQueries .= "`r`n'------------------------------- "
 		allQueries .= "`r`n'" . query.name . "'"
 		allQueries .= "`r`n" . query.sql 
 	}
