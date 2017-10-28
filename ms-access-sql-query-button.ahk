@@ -21,8 +21,8 @@ SendMode Input  ; Recommended for new scripts due to its superior speed and reli
 SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 ; #Warn  ; Enable warnings to assist with detecting common errors.
 
-; // tray icon menu
-mountMenu() ; 
+; // entry-point
+mountMenu() ; tray icon menu 
 
 global accessAddress := ; access database address
 global acc := ; access instance
@@ -34,6 +34,7 @@ global recentFilesAddress := [] ;
 #n:: main(false,true) ; selects a new db and create a query
 #!n:: main(false,false) ; selects a new db and create a query
 +esc:: ExitApp
+return
 
 ; // functions
 main(onlySelectsDB, createSQLquery) { ; sends the command to create a new query
@@ -103,6 +104,16 @@ exportAllQuery() { ; export all queries from the database
 	return
 }
 
+pinTopFile() { ; toggle pin top selected file
+	; MsgBox, % accessAddress
+	WinGet, ExStyle, ExStyle, %accessAddress%
+	if (ExStyle & 0x8)
+		WinSet, AlwaysOnTop, off, %accessAddress%
+	else
+		WinSet, AlwaysOnTop, on, %accessAddress%
+	  ; ExStyle = AlwaysOnTop
+} 
+
 opensNotePadAndPaste() { ; create a new instance of notepad and paste
 	run, Notepad
 	WinWaitActive, ahk_class Notepad
@@ -123,7 +134,7 @@ mountMenu() { ; mount tray menu
 	menu, tray, DeleteAll
 	menu, tray, Icon, favicon.ico 
 	menu, tray, NoStandard ; remove standard menu
-	Menu, tray, Add, Selects a New Database, selectsAccessDB
+	Menu, tray, Add, Select a New Database, selectsAccessDB
 	Menu, tray, Add, Activate Database, showsAccessDB
 	Menu, tray, Add ; line separator ; --------------------------
 	Menu, tray, Add, New SQL Query, createsSQLquery
@@ -133,6 +144,7 @@ mountMenu() { ; mount tray menu
 	Menu, tray, Add, Export All Queries, exportSQLStructure
 	Menu, tray, Add ; line separator ; --------------------------
 	recentFilesMountMenu() ; adds temp files submenu	
+	Menu, tray, Add, Toggle Pin Top, togglePinTop 
 	Menu, tray, Add, Recent Files, :recentFilesTemp
 	Menu, tray, Add ; line separator ; --------------------------
 	Menu, tray, Add, Unload Selected Database, unloadSelectedDatabase
@@ -148,6 +160,14 @@ recentFilesMountMenu() { ; adds temp files to submenu
 }
 
 ; // sub-labels
+togglePinTop:
+	if (filename == "") {
+		MsgBox, No database selected
+		return
+	}
+	pinTopFile() ; toggle pin top selected file
+return
+
 createsSQLquery:
 	main(false,true) ; sends the command to create a new query
 return
@@ -178,11 +198,10 @@ selectsAccessDB:
 return
 
 showsAccessDB:
-	if (filename != "") {
+	if (filename != "")
 		WinActivate, %filename%
-	} else {
+	else 
 		MsgBox, No database selected
-	}
 return
 
 recentFiles:
